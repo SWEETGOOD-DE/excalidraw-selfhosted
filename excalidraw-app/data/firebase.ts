@@ -23,7 +23,7 @@ import { MIME_TYPES } from "../../packages/excalidraw/constants";
 import type { SyncableExcalidrawElement } from ".";
 import { getSyncableElements } from ".";
 import type { ResolutionType } from "../../packages/excalidraw/utility-types";
-import type { Socket } from "socket.io-client";
+import { Socket } from "socket.io-client";
 import type { RemoteExcalidrawElement } from "../../packages/excalidraw/data/reconcile";
 
 // private
@@ -52,8 +52,10 @@ const _loadFirebase = async () => {
   const firebase = (
     await import(/* webpackChunkName: "firebase" */ "firebase/app")
   ).default;
+  const storage = import.meta.env.VITE_APP_STORAGE_BACKEND;
+  const useFirebase = storage === "firebase";
 
-  if (!isFirebaseInitialized) {
+  if (useFirebase && !isFirebaseInitialized) {
     try {
       firebase.initializeApp(FIREBASE_CONFIG);
     } catch (error: any) {
@@ -142,12 +144,12 @@ const decryptElements = async (
 };
 
 class FirebaseSceneVersionCache {
-  private static cache = new WeakMap<Socket, number>();
-  static get = (socket: Socket) => {
+  private static cache = new WeakMap<SocketIOClient.Socket, number>();
+  static get = (socket: SocketIOClient.Socket) => {
     return FirebaseSceneVersionCache.cache.get(socket);
   };
   static set = (
-    socket: Socket,
+    socket: SocketIOClient.Socket,
     elements: readonly SyncableExcalidrawElement[],
   ) => {
     FirebaseSceneVersionCache.cache.set(socket, getSceneVersion(elements));
@@ -292,7 +294,7 @@ export const saveToFirebase = async (
 export const loadFromFirebase = async (
   roomId: string,
   roomKey: string,
-  socket: Socket | null,
+  socket: SocketIOClient.Socket | null,
 ): Promise<readonly SyncableExcalidrawElement[] | null> => {
   const firebase = await loadFirestore();
   const db = firebase.firestore();
