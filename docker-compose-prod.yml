@@ -1,0 +1,63 @@
+version: "3.8"
+
+services:
+  excalidraw:
+    stdin_open: true
+    build:
+      context: .
+      target: production
+    container_name: excalidraw
+    ports:
+      - "8080:8080"
+    restart: always
+    healthcheck:
+      disable: true
+    environment:
+      - NODE_ENV=production
+
+  excalidraw-storage-backend:
+    build:
+      context: https://github.com/SWEETGOOD-DE/excalidraw-storage-backend.git#main
+      target: production
+    depends_on:
+      # Change this accordingly if you want to use another storage backend than redis
+      redis:
+        condition: service_healthy
+    ports:
+      - "5011:8080"
+    restart: always
+    environment:
+      # Change this accordingly if you want to use another storage backend than redis
+      STORAGE_URI: redis://:${REDIS_PASSWORD}@redis:6379
+      STORAGE_TTL: 2592000000
+
+  excalidraw-room:
+    image: excalidraw/excalidraw-room
+    restart: always
+    ports:
+      - "5012:80"
+
+  # Change this accordingly if you want to use another storage backend than redis
+  redis:
+    image: redis
+    # Currently configured to run in "hybrid mode" (RDB + AOF)
+    # Read more on this topic BEFORE using Redis in production – if this is configured in a bad way data loss can occur:
+    # https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/#ok-so-what-should-i-use
+    # https://stackoverflow.com/a/63441034
+    # https://www.dragonflydb.io/faq/how-to-configure-redis-as-persistent-cache
+      # save 900 1: Snapshot after 900 seconds if at least 1 key changed
+      # appendonly yes: Uses AOF (Append Only File)
+      # aof-use-rdb-preamble yes: Uses RDB (Redis Database) file for faster startup and simple backup
+      # rdbcompression yes: Enables compression of RDB file
+    command: redis-server --save 900 1 --appendonly yes --aof-use-rdb-preamble yes --rdbcompression yes --requirepass ${REDIS_PASSWORD}
+    restart: always
+    healthcheck:
+      test: "[ $$(redis-cli -a ${REDIS_PASSWORD} ping) = 'PONG' ]"
+      interval: 5s
+      timeout: 10s
+      retries: 120
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:
