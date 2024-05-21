@@ -4,6 +4,7 @@ WORKDIR /opt/node_app
 
 FROM build as production_buildstage
 
+COPY package.json yarn.lock ./
 COPY excalidraw-app/package.json ./excalidraw-app/
 COPY packages/excalidraw/package.json ./packages/excalidraw/
 
