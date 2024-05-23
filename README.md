@@ -1,3 +1,81 @@
+## CURRENTLY THIS FORK HAS UNFIXED BUILD ERRORS
+I'm trying to fix them together with others in [this repository](https://github.com/codiflow/excalidraw-fix-httpstorage). Feel free to collaborate. 😎
+
+---
+
+This is a (hopefully temporary) fork from the [original excalidraw project](https://github.com/excalidraw/excalidraw) implementing:
+- The recent version of Excalidraw (as of 2024-05-22)
+- All the changes from [b310-digital's fork](https://github.com/b310-digital/excalidraw) (which brings support for rooms without using firebase). This fork is inspired and partly taken from [Kilian Decaderincourt](https://gitlab.com/kiliandeca/excalidraw-fork).
+- The yarn-build-fix from [squatica](https://github.com/b310-digital/excalidraw/compare/master...squatica:excalidraw:fix-yarn-build)
+- The redis db healthcheck from [squatica](https://github.com/kitsteam/excalidraw-storage-backend/pull/17/commits/4dbacf0079e9d7788710ff9e2eb12bd23ba94d2c)
+- My own improvements regarding the docker-compose files and the redis configuration<br />
+
+==THIS REPOSITORY SHOULD NOT BE SEEN AS MID / LONG TERM SOLUTION==
+I would really appreciate the upstream maintainers to implement some kind of self-hostable solution into their repository. But as long as pull requests to forks are outstanding for months and one has to fix a lot of different small issues until an up to date version of Excalidraw is up and running this repository will hopefully do it's job. 😎
+
+## Run with docker compose
+
+Adapt the password in `.env.default` and rename it to `.env`.
+
+### Development
+
+Adapt the variables according to your needs in `.env.development`
+
+Start the containers:
+```
+docker compose -f docker-compose-dev.yml up -d
+```
+
+Check the logs:
+`docker compose logs -t -f`
+
+### Production use
+
+Adapt the variables according to your needs in `.env.production`
+
+Start the containers:
+```
+docker compose -f docker-compose-prod.yml up -d
+```
+
+Check the logs:
+`docker compose logs -t -f`
+
+### Important
+The collaboration mode **requires** a secure context (https). Localhost works as well, but http over a local network will throw errors in the browser console.
+
+---
+
+## Instructions taken from [b310-digital's fork](https://github.com/b310-digital/excalidraw)
+==Dunno if those instructions are still up to date and working==
+
+### Setup with docker
+
+Please copy the .env.development.default or .env.production.default file to .env (or with environment without default at the end) and change it according to your needs, see [react-scripts](https://create-react-app.dev/docs/adding-custom-environment-variables/).
+
+### Development
+
+```
+docker-compose up -d
+docker-compose exec excalidraw yarn install
+docker-compose exec excalidraw yarn start
+```
+
+Hint: Collab mode requires a secure context (https). Localhost works as well, but not http over local network.
+
+#### Commands
+
+| Command            | Description                       |
+| ------------------ | --------------------------------- |
+| `yarn`             | Install the dependencies          |
+| `yarn start`       | Run the project                   |
+| `yarn fix`         | Reformat all files with Prettier  |
+| `yarn test`        | Run tests                         |
+| `yarn test:update` | Update test snapshots             |
+| `yarn test:code`   | Test for formatting with Prettier |
+
+### Thanks
+
 <a href="https://excalidraw.com/" target="_blank" rel="noopener">
   <picture>
     <source media="(prefers-color-scheme: dark)" alt="Excalidraw" srcset="https://excalidraw.nyc3.cdn.digitaloceanspaces.com/github/excalidraw_github_cover_2_dark.png" />
