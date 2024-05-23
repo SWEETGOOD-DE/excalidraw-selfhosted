@@ -1,21 +1,31 @@
 // Inspired and partly copied from https://gitlab.com/kiliandeca/excalidraw-fork
 // MIT, Kilian Decaderincourt
+// Adapted by SWEETGOOD (https://sweetgood.de)
 
-import { getSyncableElements, SyncableExcalidrawElement } from ".";
-import { MIME_TYPES } from "../../packages/excalidraw/constants";
-import { decompressData } from "../../packages/excalidraw/data/encode";
-import { encryptData, decryptData, IV_LENGTH_BYTES } from "../../packages/excalidraw/data/encryption";
-import { restoreElements } from "../../packages/excalidraw/data/restore";
+import { reconcileElements } from "../../packages/excalidraw";
+import type {
+  ExcalidrawElement,
+  FileId
+} from "../../packages/excalidraw/element/types";
 import { getSceneVersion } from "../../packages/excalidraw/element";
-import { ExcalidrawElement, FileId } from "../../packages/excalidraw/element/types";
-import {
+import type Portal from "../collab/Portal";
+import { restoreElements } from "../../packages/excalidraw/data/restore";
+import type {
   AppState,
   BinaryFileData,
   BinaryFileMetadata,
   DataURL,
 } from "../../packages/excalidraw/types";
-import Portal from "../collab/Portal";
-import { reconcileElements } from "../collab/reconciliation";
+import { decompressData } from "../../packages/excalidraw/data/encode";
+import {
+  encryptData,
+  decryptData,
+  IV_LENGTH_BYTES
+} from "../../packages/excalidraw/data/encryption";
+import { MIME_TYPES } from "../../packages/excalidraw/constants";
+import type { SyncableExcalidrawElement } from ".";
+import { getSyncableElements } from ".";
+import type { RemoteExcalidrawElement } from "../../packages/excalidraw/data/reconcile";
 import { StoredScene } from "./StorageBackend";
 import type { Socket } from "socket.io-client";
 
