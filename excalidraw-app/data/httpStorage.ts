@@ -100,7 +100,7 @@ export const saveToHttpStorage = async (
 
   const existingElements = await getElementsFromBuffer(buffer, roomKey);
   const reconciledElements = getSyncableElements(
-    reconcileElements(elements, existingElements, appState),
+    reconcileElements(elements, existingElements as RemoteExcalidrawElement[], appState),
   );
 
   const result: boolean = await saveElementsToBackend(roomKey, roomId, reconciledElements, sceneVersion)

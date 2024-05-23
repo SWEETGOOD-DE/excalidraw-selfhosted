@@ -10,7 +10,8 @@ export interface StorageBackend {
     portal: Portal,
     elements: readonly SyncableExcalidrawElement[],
     appState: AppState,
-  ) => Promise<false | { reconciledElements: any }>;
+  ) => Promise<readonly ExcalidrawElement[] | null>;
+#  ) => Promise<false | { reconciledElements: any }>;
   loadFromStorageBackend: (
     roomId: string,
     roomKey: string,
