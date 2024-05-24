@@ -46,6 +46,13 @@ import {
   getSyncableElements,
 } from "../data";
 import {
+  isSavedToFirebase,
+  loadFilesFromFirebase,
+  loadFromFirebase,
+  saveFilesToFirebase,
+  saveToFirebase,
+} from "../data/firebase";
+import {
   importUsernameFromLocalStorage,
   saveUsernameToLocalStorage,
 } from "../data/localStorage";
